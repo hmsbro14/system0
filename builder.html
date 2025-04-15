@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>System0 | Build Your Custom PC</title>
+  <style>
+    body {
+      background-color: #0c0f14;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 40px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffd5;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+    .builder-container {
+      max-width: 900px;
+      margin: auto;
+      background: #151c25;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00ffd540;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 1rem;
+      background: #0d1117;
+      color: #fff;
+      border: 1px solid #00ffd5;
+      border-radius: 5px;
+    }
+    .part-preview {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .part-preview img {
+      max-width: 200px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .total {
+      margin-top: 30px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      text-align: center;
+      color: #00ffd5;
+    }
+    .back-btn {
+      display: block;
+      margin: 30px auto 0;
+      text-align: center;
+      padding: 12px 24px;
+      background: #00ffd5;
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+    .back-btn:hover {
+      background: #00ccaa;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Build Your Custom PC</h1>
+
+  <div class="builder-container">
+    <label for="cpu">CPU</label>
+    <select id="cpu"></select>
+    <div class="part-preview" id="cpu-preview"></div>
+
+    <label for="gpu">GPU</label>
+    <select id="gpu"></select>
+    <div class="part-preview" id="gpu-preview"></div>
+
+    <label for="ram">RAM</label>
+    <select id="ram"></select>
+    <div class="part-preview" id="ram-preview"></div>
+
+    <label for="storage">Storage</label>
+    <select id="storage"></select>
+    <div class="part-preview" id="storage-preview"></div>
+
+    <label for="motherboard">Motherboard</label>
+    <select id="motherboard"></select>
+    <div class="part-preview" id="motherboard-preview"></div>
+
+    <label for="psu">Power Supply Unit (PSU)</label>
+    <select id="psu"></select>
+    <div class="part-preview" id="psu-preview"></div>
+
+    <label for="case">Case</label>
+    <select id="case"></select>
+    <div class="part-preview" id="case-preview"></div>
+
+    <label for="monitor">Monitor</label>
+    <select id="monitor"></select>
+    <div class="part-preview" id="monitor-preview"></div>
+
+    <label for="peripherals">Peripherals</label>
+    <select id="peripherals"></select>
+    <div class="part-preview" id="peripherals-preview"></div>
+
+    <div class="total" id="totalPrice">Total: $0</div>
+
+    <a href="index.html" class="back-btn">← Back to Home</a>
+  </div>
+
+  <script>
+    const apiKey = "RLdbGyPk8GnGhsx6ZYnTADSa";
+    const categories = {
+      cpu: "abcat0507002",
+      gpu: "abcat0507000",
+      ram: "abcat0507003",
+      storage: "abcat0507004",
+      motherboard: "abcat0507008",
+      psu: "abcat0507005",
+      case: "abcat0507006",
+      monitor: "abcat0509000",
+      peripherals: "abcat0515000"
+    };
+
+    const partElements = {};
+
+    function createOption(product) {
+      const option = document.createElement('option');
+      option.value = product.salePrice;
+      option.setAttribute('data-image', product.image);
+      option.textContent = `${product.name} - $${product.salePrice}`;
+      return option;
+    }
+
+    function showImage(part, url) {
+      const preview = document.getElementById(`${part}-preview`);
+      preview.innerHTML = `<img src="${url}" alt="${part} Preview">`;
+    }
+
+    function calculateTotal() {
+      let total = 0;
+      for (const part in partElements) {
+        const select = partElements[part];
+        const value = parseFloat(select.value) || 0;
+        total += value;
+      }
+      document.getElementById('totalPrice').textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    async function loadPart(part, categoryId) {
+      const select = document.getElementById(part);
+      partElements[part] = select;
+      try {
+        const res = await fetch(`https://api.bestbuy.com/v1/products((categoryPath.id=${categoryId}))?apiKey=${apiKey}&format=json&show=name,salePrice,image&pageSize=10`);
+        const data = await res.json();
+        data.products.forEach((product, index) => {
+          const option = createOption(product);
+          select.appendChild(option);
+          if (index === 0) {
+            showImage(part, product.image);
+          }
+        });
+        select.addEventListener('change', () => {
+          const image = select.options[select.selectedIndex].getAttribute('data-image');
+          showImage(part, image);
+          calculateTotal();
+        });
+      } catch (err) {
+        console
+::contentReference[oaicite:0]{index=0}
+ 
